@@ -30,7 +30,7 @@ error handling, is essential for the deployment and success of an explicit
 cooperation approach.
 
 The PLUS working group will specify a new protocol as a Path Layer
-User Substrate (PLUS), to support experimental deployment of
+UDP Substrate (PLUS), to support experimental deployment of
 explicit cooperation between endpoints and devices on path, with the following goals:
 
 - enable ubiquitous deployment of encrypted higher layer protocols
