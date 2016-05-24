@@ -9,26 +9,24 @@ Protocol (UDP), which provides compatibility with existing middleboxes in the
 Internet as well as ubiquitous support in endpoints, and provides for
 userspace implementation.
 
-The current Internet protocol stack has no layer for explicit,
-in-band signaling of flow semantics and characteristics to network
-elements in an interdomain context, nor an integrated signaling
-mechanism from network elements to back to endpoints and applications.
-This layer never evolved within the stack, because middleboxes and
-other devices on path could simply inspect and modify headers and
-payload of unencrypted traffic at every layer. This implicit use of
-information from the transport and application layers is a
-key cause of the ossification that makes it hard or impossible
-to deploy new protocols.
+The current Internet protocol stack does not provide explicit, transport-
+independent signaling of flow characteristics to on-path network devices. This
+has led to the deployment of devices which perform implicit discovery of these
+characteristics, through inspection of protocol headers all they way up to the
+application layer, a practice made possible because these headers are sent in
+the clear. Inspection and modification of unencrypted protocol headers is a
+key cause of the ossification that makes it hard or impossible to deploy new
+protocols.
 
-In order to support more ubiquitous deployment of encryption,
-explicit signaling must be added to the stack, and it must be
-transport protocol independent. While IP would seem to be the
-natural home for this facility, both IPv4 and IPv6 options and
-extensions have deployment problems on their own, which makes it
-hard to include any additional information in these protocols.
-Additionally, a feedback channel that provides information from
-on-path devices back to endpoints and applications, e.g. for error
-handling, is essential for the deployment and success of an explicit
+In order to support more ubiquitous deployment of encryption, and the
+encryption of transport headers to allow deployment of new transport
+protocols, explicit signaling must be added to the stack, and it must be
+transport protocol independent. While IP would seem to be the natural home for
+this facility, both IPv4 and IPv6 options and extensions have deployment
+problems on their own, which makes it hard to include any additional
+information in these protocols. Additionally, a feedback channel that provides
+information from on-path devices back to endpoints and applications, e.g. for
+error handling, is essential for the deployment and success of an explicit
 cooperation approach.
 
 The PLUS working group will specify a new protocol as a Path Layer
