@@ -1,0 +1,114 @@
+- Name: PLUS (Path Layer UDP Substrate)
+
+- Description: The PLUS working group's goal is to enable the deployment of new, encrypted transport protocols, while providing a transport-independent method to signal flow semantics under transport and application control. The approach from which the working group will start is a shim layer based on the User Datagram Protocol (UDP), which provides compatibility with existing middleboxes in the Internet as well as ubiquitous support in endpoints, and provides for userspace implementation. Note that this effort follows from the SPUD BoF in Dallas and the SPUD prototyping effort, and preparation for the BoF has taken place on the SPUD list.
+
+- Agenda
+  - Introduction (10 min)
+      - Chairs
+  - Overview of proposed approach (20 min)
+      - Brian Trammell, Mirja Kuehlewind, Ted Hardie
+  - Discussion of the potential for IETF work (30 min)
+      - BoF attendees
+  - Charter review (20 min)
+      - Chairs
+  - Charter Discussion (60 min)
+      - BoF attendees
+
+- Status: WG forming
+- Responsible AD: Spencer Dawkins
+- BoF proponents: Ted Hardie <ted.ietf@gmail.com>, Mirja Kuehlewind <mirja.kuehlewind@tik.ee.ethz.ch>, Brian Trammell <ietf@trammell.ch>
+- BoF chairs: (TBD)
+- Number of attendees: 150
+- Length of session: 2.5 hours
+- Conflicts:  TSVAREA, SAAG, TLS, RTCWEB, DISPATCH, MAPRG, TSVWG, ICCRG, TCPM, TCPINC, MPTCP, TAPS, LURK, UTA, TSV BoFs
+- Links to the mailing list, draft charter if any, relevant Internet-Drafts, etc.
+   - Tentative charter: 
+        The PLUS working group's goal is to enable the deployment of new, encrypted
+        transport protocols, while providing a transport-independent method to signal
+        flow semantics under transport and application control. The approach from
+        which the working group will start is a shim layer based on the User Datagram
+        Protocol (UDP), which provides compatibility with existing middleboxes in the
+        Internet as well as ubiquitous support in endpoints, and provides for
+        userspace implementation.
+
+        The current Internet protocol stack does not provide explicit, transport-
+        independent signaling of flow characteristics to on-path network devices. This
+        has led to the deployment of devices which perform implicit discovery of these
+        characteristics, through inspection of protocol headers all they way up to the
+        application layer, a practice made possible because these headers are sent in
+        the clear. Inspection and modification of unencrypted protocol headers is a
+        key cause of the ossification that makes it hard or impossible to deploy new
+        protocols.
+
+        In order to support more ubiquitous deployment of encryption, and the
+        encryption of transport headers to allow deployment of new transport
+        protocols, explicit signaling must be added to the stack, and it must be
+        transport protocol independent. While IP would seem to be the natural home for
+        this facility, both IPv4 and IPv6 options and extensions have deployment
+        problems on their own, which makes it hard to include any additional
+        information in these protocols. Additionally, a feedback channel that provides
+        information from on-path devices back to endpoints and applications, e.g. for
+        error handling, is essential for the deployment and success of an explicit
+        cooperation approach.
+
+        The PLUS working group will specify a new protocol as a Path Layer
+        User Substrate (PLUS), to support experimental deployment of
+        explicit cooperation between endpoints and devices on path, with the following goals:
+
+        enable ubiquitous deployment of encrypted higher layer protocols
+          by providing exposure of basic TCP-like semantics (e.g. SYN, FIN, 
+          RST flags) to devices on path (e.g. NATs and firewalls).
+
+        allow applications and transport protocols to explicitly provide
+          limited information in cleartext to devices on path
+
+        allow devices on path to provide feedback and information about
+          the path in cleartext to sending endpoints, under sending endpoint 
+          control
+
+        allow devices on path to provide information about the path in cleartext 
+          to receiving endpoints, with feedback to the sending endpoint, under
+          sending endpoint control
+
+        Note that this approach explicitly gives the control of information
+        exposure back the application and/or transport layer protocol on
+        the end host. It is the goal of PLUS to minimize the information
+        exposed at the level of detail that is useful for the network,
+        while encrypting everything else. This is important to avoid future
+        implicit treatment and the resulting ossification, as well as to
+        leverage the principle of least exposure to minimize privacy risks
+        presented by explicit cooperation.
+
+        Given that the primary goal of PLUS is to enable the deployment of arbitrary
+        transport protocols, encrypting transport protocol headers, we assume that
+        the higher-layer protocol can provide an encryption context that can be used by
+        PLUS to provide authentication, integrity, and encryption where needed. The
+        primary threat model to defend against will be modification or deletion of
+        exposed information by middleboxes and other devices on path, by allowing a
+        remote endpoint to detect modifications.
+
+        The working group will start with an initial set of use cases (see
+        draft-kuehlewind-spud-use-cases) and requirements (see
+        draft-trammell-spud-req), taken from experience with the Substrate
+        Protocol for User Datagrams (SPUD) prototype.
+        The working group's main output will be an experimental protocol
+        specification, together with an initial registry of types of
+        information that can be exposed using PLUS, clearly aligned to
+        these use cases and requirements. The working group will close if
+        it is not able to come to consensus on a protocol design to meet
+        these requirements.
+
+        The working group will additionally aim to identify other working
+        groups that could or should address parts of these requirements
+        within existing protocols, e.g. by specifying new protocol
+        extensions or as input for on-going standardization work. It will
+        aim to work with working groups defining encryption protocols (e.g.
+        TLS) which could be used for encryption of transport protocols
+        running over PLUS.
+
+   - Mailing List: https://www.ietf.org/mailman/listinfo/spud
+   - Relevant drafts:
+      - Requirements for the design of a Substrate Protocol for User Datagrams
+      https://tools.ietf.org/html/draft-trammell-spud-req-04
+      - Use Cases for a Substrate Protocol for User Datagrams
+      https://tools.ietf.org/html/draft-kuehlewind-spud-use-cases-01
