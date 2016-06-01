@@ -1,38 +1,35 @@
 Path Layer UDP Substrate (PLUS)
 ===============================
 
-The PLUS working group's goal is to enable the deployment of new, encrypted
-transport protocols, while providing a transport-independent method to signal
-flow semantics under transport and application control. The approach from
-which the working group will start is a shim layer based on the User Datagram
-Protocol (UDP), which provides compatibility with existing middleboxes in the
-Internet as well as ubiquitous support in endpoints, and provides for
-userspace implementation.
+The PLUS working group's goal is to define a common shim layer atop the User
+Datagram Protocol (UDP) to provide a transport-independent method to signal
+flow semantics under transport and application control, necessary to enable
+the deployment of new, encrypted transport protocols within the existing
+Internet. UDP provides compatibility with currently deployed middleboxes as
+well as ubiquitous support in endpoints, and supports userspace implementation
+of new transport protocols. The working group will not specify any new
+transport protocols.
 
 The current Internet protocol stack does not provide explicit, in-band,
-transport-independent signaling of transport semantics and flow characteristics 
-to on-path network devices. This has led to the deployment of devices which 
-perform implicit discovery of these characteristics, through inspection of 
-protocol headers all they way up to the application layer, a practice made 
-possible because these headers are sent in the clear.
-
-Current signaling approaches are not generally deployable across administrative
-domains, as they rely on out-of-band enforcement of honesty. There is no 
-incentive to believe and act on an imperative signal sent by an untrusted 
-endpoint or middlebox. By relying on a small signaling vocabulary in terms 
-of declarations of intentions, tolerances, and explicit tradeoffs, PLUS aims
-to improve on this situation.
+transport-independent signaling to on-path network devices. This has led to
+the deployment of devices which perform implicit discovery of transport
+semantics and traffic characteristics via inspection of protocol headers and
+payload, a practice made possible when these are sent in the clear.
 
 In order to support more ubiquitous deployment of encryption, and the
 encryption of transport headers to allow deployment of new transport
-protocols, explicit in-band signaling must be added to the stack, and it must
-be transport protocol independent. While IP would seem to be the natural home
-for this facility, both IPv4 and IPv6 options and extensions have deployment
-problems on their own, which makes it hard to include any additional
-information in these protocols. Additionally, a feedback channel that provides
-information from on-path devices back to endpoints and applications, e.g. for
-error handling, is essential for the deployment and success of an explicit
-cooperation approach.
+protocols, explicit in-band signaling must be added to the stack. This
+signaling must be transport protocol independent, and the types of information
+signaled must be based on characteristics that can be independently verified
+by devices on path, or that can be usefully applied without requiring a trust
+relationship between endpoints and the path. Further, a feedback channel that
+provides information from on-path devices back to endpoints and applications,
+e.g. for error handling, is essential for the deployment and success of an
+explicit cooperation approach.
+
+While IP would seem to be the natural home for this facility, both IPv4 and
+IPv6 options and extensions have deployment problems on their own, which makes
+it hard to include any additional information in these protocols.
 
 The PLUS working group will specify a new protocol as a Path Layer
 UDP Substrate (PLUS), to support experimental deployment of
@@ -53,41 +50,37 @@ explicit cooperation between endpoints and devices on path, with the following g
   path to receiving endpoints, with encrypted feedback to the 
   sending endpoint, under sending endpoint control
 
-Note that this approach explicitly gives the control of information
-exposure back the application and/or transport layer protocol on
-the end host. It is the goal of PLUS to minimize the information
-exposed, to make information exposure transparent, and to limit
-the level of detail to that useful for network treatment, while 
-encrypting everything else. Endpoint verification of signaling 
-integrity, careful design of minimal data structures, and restrictive 
-policies for registration of signals can help to meet this goal. 
-This is important to avoid future implicit treatment and resulting 
-ossification, as well as to minimize the privacy risks presented 
-by explicit cooperation. 
+This approach explicitly gives the control of information exposure back the
+application and/or transport layer protocol on the end host. It is the goal of
+PLUS to minimize the information exposed, to make information exposure
+transparent, and to limit the level of detail to that useful for network
+treatment, while encrypting everything else. Endpoint verification of
+signaling integrity, careful design of minimal data structures, and
+restrictive policies for registration of signals can help to meet this goal.
+This is important to avoid future implicit treatment and resulting
+ossification, as well as to minimize the privacy risks presented by explicit
+cooperation.
 
-Given that the primary goal of PLUS is to enable the deployment of arbitrary
-transport protocols, encrypting transport protocol headers, we assume that
-the higher-layer protocol can provide an encryption context that can be used by
-PLUS to provide authentication, integrity, and encryption where needed. The
-primary threat model to defend against will be modification or deletion of
-exposed information by middleboxes and other devices on path, by allowing a
-remote endpoint to detect modifications.
+Given that the primary goal of PLUS is to enable the deployment of transport
+protocols with encrypted headers, we assume that the higher-layer protocol can
+provide an encryption context that can be used by PLUS to provide
+authentication, integrity, and encryption where needed. The primary threat
+model to defend against will be modification or deletion of exposed
+information by middleboxes and other devices on path, by allowing a remote
+endpoint to detect modifications.
 
-The working group will start with an initial set of use cases (see
-draft-kuehlewind-spud-use-cases) and requirements (see
-draft-trammell-spud-req), taken from experience with the Substrate
-Protocol for User Datagrams (SPUD) prototype.
-The working group's main output will be an experimental protocol
-specification, together with an initial registry of types of
-information that can be exposed using PLUS, clearly aligned to
-these use cases and requirements. The working group will close if
-it is not able to come to consensus on a protocol design to meet
-these requirements.
+The working group will start with an initial set of use cases (see draft-
+kuehlewind-spud-use-cases) and requirements (see draft-trammell-spud-req),
+taken from experience with the Substrate Protocol for User Datagrams (SPUD)
+prototype. The working group's main output will be an experimental protocol
+specification, together with an initial registry of types of information that
+can be exposed using PLUS, clearly aligned to the use cases determined by the
+working group. The working group will close if it is not able to come to
+consensus on a protocol design to meet these requirements.
 
-The working group will additionally aim to identify other working
-groups that could or should address parts of these requirements
-within existing protocols, e.g. by specifying new protocol
-extensions or as input for on-going standardization work. It will
-aim to work with working groups defining encryption protocols (e.g.
-TLS) which could be used for encryption of transport protocols
-running over PLUS.
+The working group will additionally aim to identify and work with other
+working groups that could address parts of these requirements within existing
+protocols, e.g. by specifying new protocol extensions, or as input for on-
+going standardization work. It will aim to work with working groups defining
+encryption protocols (e.g. DTLS) which could be used for encryption of
+transport protocols running over PLUS.
