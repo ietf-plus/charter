@@ -77,20 +77,32 @@ specification, together with an initial registry of types of information that
 can be exposed using PLUS, clearly aligned to the use cases determined by the
 working group. This specification will consider potential attacks against the
 protocol, both arising from the encapsulation chosen as well as new attacks
-made possible by the protocol, and propose mitigations for these attacks.
+made possible by the protocol, and propose mitigations for these attacks. 
 
 The working group will close if it is not able to come to consensus on a
 protocol design to meet these requirements.
+
+Discussion and reports of implementations and deployments of the PLUS
+specification, and discussion and reports of implementations and deployments
+of transport protocols running over PLUS, will be in-scope for the working
+group, to evaluate the progress of the experiment.
 
 The working group will additionally aim to identify and work with other
 working groups that could address parts of these requirements within existing
 protocols, e.g. by specifying new protocol extensions, or as input for on-
 going standardization work. It will aim to work with working groups defining
 encryption protocols (e.g. DTLS) which could be used for encryption of
-transport protocols running over PLUS.
+transport protocols running over PLUS. It will aim to work with working groups
+defining transport protocols (e.g. QUIC) whose devlopment efforts could act as
+sources of requirements for PLUS.
 
 Out of scope for the working group are:
 
-- The design and specification of new transport protocols running over PLUS.
+- The design and specification of new transport protocols running over PLUS
 - Mechanisms for signaling among multiple devices on path between two endpoints
 - Mechanisms for key exchange or cryptographic context establishment between endpoints and devices on path
+
+Initial milestones:
+
+- Chartering + 12 mo: Submit an Experimental protocol specification for the PLUS protocol to the IESG
+- Chartering + 18 mo: Submit initial contents of registry of signals to be exposed using PLUS to the IESG
