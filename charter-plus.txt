@@ -16,28 +16,33 @@ the deployment of devices which perform implicit discovery of transport
 semantics and traffic characteristics via inspection of protocol headers and
 payload, a practice made possible when these are sent in the clear.
 
-In order to support more ubiquitous deployment of encryption, and the
-encryption of transport headers to allow deployment of new transport
-protocols, explicit in-band signaling must be added to the stack. This
-signaling must be transport protocol independent, and the types of information
-signaled must be based on characteristics that can be independently verified
-by devices on path, or that can be usefully applied without requiring a trust
-relationship between endpoints and the path. Further, a feedback channel that
-provides information from on-path devices back to endpoints and applications,
-e.g. for error handling, is essential for the deployment and success of an
-explicit cooperation approach.
+The most important of these signals concerns flow lifetime and association of
+a uniflow with its reverse counterpart, by which firewalls and other stateful
+middleboxes assume endpoint consent to communicate. We assume that future
+transport protocols will have confidentiality-protected headers, both to
+protect their own operation as well as to prevent future ossification due to
+implicit use of their internals by device on path. 
 
-While IP would seem to be the natural home for this facility, both IPv4 and
-IPv6 options and extensions have deployment problems on their own, which makes
-it hard to include any additional information in these protocols.
+Other signals currently exposed in cleartext transport headers include
+information for implicit passive performance measurement, such as loss and
+round-trip-time calculation, as provided in TCP by the sequence and
+acknowledgment numbers and the timestamp option. 
 
-The PLUS working group will specify a new protocol as a Path Layer
-UDP Substrate (PLUS), to support experimental deployment of
-explicit cooperation between endpoints and devices on path, with the following goals:
+This signaling should be transport protocol independent, to allow on-path
+devices using it to be adapted once for a variety of future transport
+protocols. While IP would seem to be the natural home for this facility, both
+IPv4 and IPv6 options and extensions have deployment problems on their own,
+which makes it hard to include any additional information in these protocols.
+
+The PLUS working group will specify a new protocol as a Path Layer UDP
+Substrate (PLUS), to support experimental deployment of explicit cooperation
+between endpoints and devices on path, with the following initial goal:
 
 - enable ubiquitous deployment of encrypted higher layer protocols
   by providing exposure of basic TCP-like semantics (e.g. SYN, FIN, 
   RST flags) to devices on path (e.g. NATs and firewalls).
+
+The protocol may be extensible to:
 
 - allow applications and transport protocols to explicitly provide
   limited information with integrity protection to devices on path
@@ -59,36 +64,33 @@ signaling integrity, careful design of minimal data structures, and
 restrictive policies for registration of signals can help to meet this goal.
 This is important to avoid future implicit treatment and resulting
 ossification, as well as to minimize the privacy risks presented by explicit
-cooperation.
+signaling.
 
-Given that the primary goal of PLUS is to enable the deployment of transport
-protocols with encrypted headers, we assume that the higher-layer protocol can
-provide an encryption context that can be used by PLUS to provide
-authentication, integrity, and encryption where needed. The primary threat
-model to defend against will be modification or deletion of exposed
-information by middleboxes and other devices on path, by allowing a remote
-endpoint to detect modifications.
-
-The working group will start with an initial set of use cases (see draft-
-kuehlewind-spud-use-cases) and requirements (see draft-trammell-spud-req),
-derived from experience with the Substrate Protocol for User Datagrams (SPUD)
-prototype. These documents are the source of the broad goals of the PLUS
-effort described in this charter. Detail changes to the requirements are in
-scope for the working group.
+We assume that the higher-layer protocol can provide an encryption context
+that can be used by PLUS to provide authentication, integrity, and encryption
+where needed. The primary threat model to defend against will be modification
+or deletion of exposed information by middleboxes and other devices on path,
+by allowing a remote endpoint to detect modifications.
 
 The working group's main output will be an experimental protocol
-specification, together with an initial registry of types of information that
-can be exposed using PLUS, clearly aligned to use cases determined by the
-working group. This specification will consider potential attacks against the
-protocol, both arising from the encapsulation chosen as well as new attacks
-made possible by the protocol, and propose mitigations for these attacks. The
-working group will close if it is not able to come to consensus on a protocol
-design to meet its goals.
+specification, together with an registry of types of information that can be
+exposed using PLUS. 
 
-Discussion and reports of implementations and deployments of the PLUS
-specification, and discussion and reports of implementations and deployments
-of transport protocols running over PLUS, will be in-scope for the working
-group, to evaluate the progress of the experiment.
+The working group will start from a set of abstract mechanisms for transport-
+independent state exposure (draft-trammell-plus-statefulness) and for the
+general two-way signaling of information about traffic flows 
+(draft-trammell-plus-abstract-mech), on the background of requirements derived 
+from the Session Protocol for UDP Datagrams (SPUD) effort. The focus in the 
+first iteration of the charter will  be on an extremely limited vocabulary of
+signals to replace performance  measurement information in TCP in a transport-
+independent way. Additional signals to be exposed are a matter of ongoing
+work. The working group will accept experiment and implementation reports for
+these signals, to evaluate the progress of the experiment.
+
+This PLUS protocol specification will consider potential attacks against
+the protocol, both arising from the encapsulation chosen as well as new
+attacks made possible by the protocol, and propose mitigations for these
+attacks.
 
 The working group will additionally aim to identify and work with other
 working groups that could address its goals within existing
@@ -107,6 +109,5 @@ Out of scope for the working group are:
 
 Initial milestones:
 
-- Chartering + 4 mo: WGLC on use cases and requirements for a PLUS protocol; this milestone may be fulfilled as an Informational document to be published as an RFC, or its content may be incorporated into the protocol specification document described by the following milestone
-- Chartering + 12 mo: Submit an Experimental protocol specification for the PLUS protocol to the IESG
-- Chartering + 18 mo: Submit initial contents of registry of signals to be exposed using PLUS to the IESG
+- Chartering + 9 mo: Submit an Experimental protocol specification for the PLUS protocol to the IESG, with a focus on state establishment and passive measurement as initial applications of the protocol.
+- Chartering + 15 mo: Submit initial contents of registry of signals to be exposed using PLUS to the IESG
