@@ -1,113 +1,61 @@
-Path Layer UDP Substrate (PLUS)
-===============================
+This proposed working group will define a new Path Layer UDP Substrate (PLUS)
+protocol, that supports in-band management of in-network state (e.g. on
+firewalls and NAT boxes) in a transport-independent way. PLUS will, in effect,
+provide a common "wire image" for new, encrypted transport protocols. PLUS is
+intended to be deployed underneath encrypted transport protocols, which
+protect the confidentiality of their payloads and most of their headers, and
+can protect the integrity of those headers exposed to the network. Given
+current deployment practices and the constraints they impose on deploying new
+protocols, PLUS will be defined as a shim layer, on top of UDP and underneath
+the actual transport protocol.
 
-The PLUS working group's goal is to define a common shim layer atop the User
-Datagram Protocol (UDP) to provide a transport-independent method to signal
-flow semantics under transport and application control, necessary to enable
-the deployment of new, encrypted transport protocols within the existing
-Internet. UDP provides compatibility with currently deployed middleboxes as
-well as ubiquitous support in endpoints, and supports userspace implementation
-of new transport protocols. The working group will not specify any new
-transport protocols.
+The clearest example of state management is taken from TCP. TCP's state
+mechanics uses a series of well-known messages that are exchanged in the
+clear, such as SYN-SYNACK-ACK in the three-way handshake, but also FIN or RST
+on connection shutdown.  Because these are visible to network elements on the
+path between the endpoints to which the transport connection belongs, they are
+often used as signals by those network elements. For transports that do not
+exchange these messages in the clear, on-path network elements lack these
+signals for their flow state management. Without these signals, stateful
+network elements such as firewalls can only apply stricter policies for those
+flows, such as shorter timeouts to remove flow state, or rules to drop this
+unknown traffic completely. PLUS will provide a transport-independent way to
+signal this information to on-path network devices, facilitating the
+deployment of new, encrypted transport protocols.
 
-The current Internet protocol stack does not provide explicit, in-band,
-transport-independent signaling to on-path network devices. This has led to
-the deployment of devices which perform implicit discovery of transport
-semantics and traffic characteristics via inspection of protocol headers and
-payload, a practice made possible when these are sent in the clear.
-
-The most important of these signals concerns flow lifetime and association of
-a uniflow with its reverse counterpart, by which firewalls and other stateful
-middleboxes assume endpoint consent to communicate. We assume that future
-transport protocols will have confidentiality-protected headers, both to
-protect their own operation as well as to prevent future ossification due to
-implicit use of their internals by device on path. 
-
-Other signals currently exposed in cleartext transport headers include
-information for implicit passive performance measurement, such as loss and
-round-trip-time calculation, as provided in TCP by the sequence and
-acknowledgment numbers and the timestamp option. 
-
-This signaling should be transport protocol independent, to allow on-path
-devices using it to be adapted once for a variety of future transport
-protocols. While IP would seem to be the natural home for this facility, both
-IPv4 and IPv6 options and extensions have deployment problems on their own,
-which makes it hard to include any additional information in these protocols.
-
-The PLUS working group will specify a new protocol as a Path Layer UDP
-Substrate (PLUS), to support experimental deployment of explicit cooperation
-between endpoints and devices on path, with the following initial goal:
-
-- enable ubiquitous deployment of encrypted higher layer protocols
-  by providing exposure of basic TCP-like semantics (e.g. SYN, FIN, 
-  RST flags) to devices on path (e.g. NATs and firewalls).
-
-The protocol may be extensible to:
-
-- allow applications and transport protocols to explicitly provide
-  limited information with integrity protection to devices on path
-
-- allow devices on path to provide unencrypted feedback and information 
-  about the path directly to sending endpoints, under sending endpoint
-  control
-
-- allow devices on path to provide unencrypted information about the 
-  path to receiving endpoints, with encrypted feedback to the 
-  sending endpoint, under sending endpoint control
-
-This approach explicitly gives the control of information exposure back the
-application and/or transport layer protocol on the end host. It is the goal of
-PLUS to minimize the information exposed, to make information exposure
-transparent, and to limit the level of detail to that useful for network
-treatment, while encrypting everything else. Endpoint verification of
-signaling integrity, careful design of minimal data structures, and
-restrictive policies for registration of signals can help to meet this goal.
-This is important to avoid future implicit treatment and resulting
-ossification, as well as to minimize the privacy risks presented by explicit
-signaling.
-
-We assume that the higher-layer protocol can provide an encryption context
-that can be used by PLUS to provide authentication, integrity, and encryption
-where needed. The primary threat model to defend against will be modification
-or deletion of exposed information by middleboxes and other devices on path,
-by allowing a remote endpoint to detect modifications.
+In non-TCP specific terms, the most important of these signals concerns flow
+lifetime and association of a uniflow with its reverse counterpart, by which
+firewalls and other stateful network element assume endpoint consent to
+communicate. A stop signal that indicates the last packet of a flow can also
+assist stateful devices in their state management, and would allow for longer
+timeouts for active flows, reducing the rate at which keep-alive traffic must
+be sent to avoid loss of-on path state. Other signals currently exposed in
+transport headers include information for implicit passive performance
+measurement, such as loss, reordering, and round-trip-time calculation, as
+provided in TCP by the sequence and acknowledgment numbers and the timestamp
+option.
 
 The working group's main output will be an experimental protocol
-specification, together with an registry of types of information that can be
-exposed using PLUS. 
+specification. This PLUS protocol specification will especially consider
+potential attacks against the protocol, both arising from the encapsulation
+chosen as well as new attacks made possible by the protocol, and propose
+mitigations for these attacks. The primary threat model to defend against
+will be modification or deletion of exposed information by middleboxes and
+other devices on path, by allowing a remote endpoint to detect modifications.
+    
+The working group will aim to identify and work with other working groups that
+could address its goals within existing protocols, e.g. by specifying new
+protocol extensions, or as input for on-going standardization work. It will
+aim to work with working groups defining transport protocols (e.g. QUIC) whose
+development efforts could act as sources of requirements for PLUS, and which
+could use PLUS to improve their deployability and interoperability with
+stateful on-path devices.
 
-The working group will start from a set of abstract mechanisms for transport-
-independent state exposure (draft-trammell-plus-statefulness) and for the
-general two-way signaling of information about traffic flows 
-(draft-trammell-plus-abstract-mech), on the background of requirements derived 
-from the Session Protocol for UDP Datagrams (SPUD) effort. The focus in the 
-first iteration of the charter will  be on an extremely limited vocabulary of
-signals to replace performance  measurement information in TCP in a transport-
-independent way. Additional signals to be exposed are a matter of ongoing
-work. The working group will accept experiment and implementation reports for
-these signals, to evaluate the progress of the experiment.
+Abstract mechanisms for state exposure and signaling will take draft-trammell-
+plus-statefulness and draft-trammell-plus-abstract-mech as starting points.
 
-This PLUS protocol specification will consider potential attacks against
-the protocol, both arising from the encapsulation chosen as well as new
-attacks made possible by the protocol, and propose mitigations for these
-attacks.
+The design and specification of new transport protocols or encryption schemes
+running over PLUS will be out of scope for the working group. Signaling among
+on-path devices for state management without endpoint visibility and consent,
+whether in-band or out-of-band, will also be out of scope.
 
-The working group will additionally aim to identify and work with other
-working groups that could address its goals within existing
-protocols, e.g. by specifying new protocol extensions, or as input for on-
-going standardization work. It will aim to work with working groups defining
-encryption protocols (e.g. DTLS) which could be used for encryption of
-transport protocols running over PLUS. It will aim to work with working groups
-defining transport protocols (e.g. QUIC) whose development efforts could act as
-sources of requirements for PLUS.
-
-Out of scope for the working group are:
-
-- The design and specification of new transport protocols running over PLUS
-- Mechanisms for signaling among multiple devices on path between two endpoints
-- Mechanisms for key exchange or cryptographic context establishment between endpoints and devices on path
-
-Initial milestones:
-
-- Chartering + 9 mo: Submit an Experimental protocol specification for the PLUS protocol to the IESG, with a focus on state establishment and passive measurement as initial applications of the protocol.
-- Chartering + 15 mo: Submit initial contents of registry of signals to be exposed using PLUS to the IESG
